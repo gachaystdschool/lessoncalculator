@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="az">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Növbəti paket (+31 gün) — iPhone uyğun</title>
+  <style>
+    body{font:16px/1.4 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:16px}
+    label{display:block;margin:8px 0 4px}
+    input,button{width:100%;padding:10px 12px;margin:4px 0;border:1px solid #ccc;border-radius:10px}
+    .btn{background:#0ea5e9;color:#fff;border-color:#0ea5e9;font-weight:600}
+    .msg{margin-top:10px;padding:12px;border:1px dashed #94a3b8;border-radius:10px}
+    small{color:#64748b}
+  </style>
+</head>
+<body>
+  <h3>Növbəti 8 dərslik paket — +31 gün</h3>
+
+  <label for="offset">Neçə gün əvvəl başlasın? (0 = bu gün)</label>
+  <input id="offset" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="0">
+
+  <button id="go" type="button" class="btn">Hesabla</button>
+
+  <div id="out" class="msg" style="display:none"></div>
+  <small>Məsələn: bu gün 14 sentyabrdırsa, 3 yaz → başlanğıc 11 sentyabr sayılacaq → üzərinə 31 gün gələcək.</small>
+
+  <script>
+    (function(){
+      var months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
+      var $ = function(id){ return document.getElementById(id); };
+      var out = $("out"), offset = $("offset"), go = $("go");
+
+      function fmtMonthDayYear(d){
+        var m = months[d.getMonth()];
+        var day = d.getDate();
+        var y = d.getFullYear();
+        return m + " " + day + ", " + y; // Oktyabr 10, 2025
+      }
+      function startFrom(today, daysBack){
+        var d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        d.setDate(d.getDate() - daysBack);
+        return d;
+      }
+      function add31(d){
+        var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        x.setDate(x.getDate() + 31);
+        return x;
+      }
+      function run(){
+        var back = parseInt(offset.value, 10);
+        if (isNaN(back) || back < 0) back = 0;
+        var now = new Date();
+        var start = startFrom(now, back);
+        var end = add31(start);
+        out.style.display = "block";
+        out.textContent = "Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək.";
+      }
+      go.addEventListener("click", run, false);
+
+      // iOS üçün: Enter basanda da hesablansın
+      offset.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ run(); }
+      }, false);
+    })();
+  </script>
+</body>
+</html>
