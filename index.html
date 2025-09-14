@@ -53,7 +53,7 @@
       </div>
       <div id="out1" class="msg hide"></div>
       <div id="out1extra" class="msg hide"></div>
-      <div class="muted">Qeyd: Versiya 1-də əlavə xətt çıxacaq — bu gün &minus; yazdığın gün + <b>standart 3 gün</b> ⇒ “Bu ay üçün 8 dərslik paketiniz &hellip; tarixində bitti.”</div>
+      <div class="muted">Qeyd: Versiya 1-də əlavə xətt çıxır — (bu gün − yazdığın gün) + <b>3 gün</b> ⇒ “Bu ay üçün 8 dərslik paketiniz … tarixində bitti.”</div>
     </div>
 
     <!-- Versiya 2: Tarixlə -->
@@ -73,118 +73,63 @@
         <button id="clear2" type="button" class="btn ghost">Təmizlə</button>
       </div>
       <div id="out2" class="msg hide"></div>
+      <div id="out2extra" class="msg hide"></div>
+      <div class="muted">Qeyd: Versiya 2 üçün də əlavə xətt əlavə edildi — (seçilən başlanğıc tarix) + <b>3 gün</b> ⇒ “Bu ay üçün 8 dərslik paketiniz … tarixində bitti.”</div>
     </div>
   </div>
 
   <script>
     (function(){
-      // Ay adları (M dd, yyyy formatı üçün baş hərfi böyük)
+      // Ay adları (M dd, yyyy)
       var months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
-
-      function fmtMonthDayYear(d){
-        return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); // Oktyabr 10, 2025
-      }
-      function toLocalYMD(d){
-        var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0');
-        return y+"-"+m+"-"+dd;
-      }
-      function startFromTodayMinus(daysBack){
-        var now = new Date();
-        var d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        d.setDate(d.getDate() - daysBack);
-        return d;
-      }
-      function addDaysLocal(d, n){
-        var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        x.setDate(x.getDate() + n);
-        return x;
-      }
+      function fmtMonthDayYear(d){ return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+      function toLocalYMD(d){ var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return y+"-"+m+"-"+dd; }
+      function startFromTodayMinus(daysBack){ var now=new Date(); var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()); d.setDate(d.getDate()-daysBack); return d; }
+      function addDaysLocal(d, n){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()+n); return x; }
       function $(id){ return document.getElementById(id); }
       function show(el){ el.classList.remove("hide"); }
       function hide(el){ el.classList.add("hide"); }
 
       // Tablar
-      var tabDays = $("tabDays"), tabDate = $("tabDate");
-      var paneDays = $("paneDays"), paneDate = $("paneDate");
-
+      var tabDays=$("tabDays"), tabDate=$("tabDate"), paneDays=$("paneDays"), paneDate=$("paneDate");
       function activate(tab){
-        if(tab === "days"){
-          tabDays.setAttribute("aria-pressed","true");
-          tabDate.setAttribute("aria-pressed","false");
-          paneDays.classList.remove("hide");
-          paneDate.classList.add("hide");
-        }else{
-          tabDays.setAttribute("aria-pressed","false");
-          tabDate.setAttribute("aria-pressed","true");
-          paneDays.classList.add("hide");
-          paneDate.classList.remove("hide");
-        }
+        if(tab==="days"){ tabDays.setAttribute("aria-pressed","true"); tabDate.setAttribute("aria-pressed","false"); paneDays.classList.remove("hide"); paneDate.classList.add("hide"); }
+        else{ tabDays.setAttribute("aria-pressed","false"); tabDate.setAttribute("aria-pressed","true"); paneDays.classList.add("hide"); paneDate.classList.remove("hide"); }
       }
       tabDays.addEventListener("click", function(){ activate("days"); }, false);
       tabDate.addEventListener("click", function(){ activate("date"); }, false);
 
       // Versiya 1 (günlə)
-      var offset = $("offset"), addDays1 = $("addDays1"), go1 = $("go1"), clear1 = $("clear1");
-      var out1 = $("out1"), out1extra = $("out1extra");
-
+      var offset=$("offset"), addDays1=$("addDays1"), go1=$("go1"), clear1=$("clear1"), out1=$("out1"), out1extra=$("out1extra");
       function runV1(){
-        var back = parseInt(offset.value,10);
-        var plus = parseInt(addDays1.value,10);
-        if(isNaN(back) || back < 0) back = 0;
-        if(isNaN(plus) || plus < 1) plus = 31;
-
-        var start = startFromTodayMinus(back);
-        var end = addDaysLocal(start, plus);
-
-        out1.textContent = "Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək.";
-        show(out1);
-
-        // əlavə xətt: (bu gün − gün) + 3 gün
-        var extraEnd = addDaysLocal(start, 3);
-        out1extra.textContent = "Bu ay üçün 8 dərslik paketiniz " + fmtMonthDayYear(extraEnd) + " tarixində bitti.";
-        show(out1extra);
+        var back=parseInt(offset.value,10); var plus=parseInt(addDays1.value,10);
+        if(isNaN(back)||back<0) back=0; if(isNaN(plus)||plus<1) plus=31;
+        var start=startFromTodayMinus(back), end=addDaysLocal(start, plus);
+        out1.textContent="Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək."; show(out1);
+        var extraEnd=addDaysLocal(start, 3);
+        out1extra.textContent="Bu ay üçün 8 dərslik paketiniz " + fmtMonthDayYear(extraEnd) + " tarixində bitti."; show(out1extra);
       }
-      function clearV1(){
-        offset.value = 0;
-        addDays1.value = 31;
-        hide(out1); out1.textContent="";
-        hide(out1extra); out1extra.textContent="";
-      }
-      go1.addEventListener("click", runV1, false);
-      clear1.addEventListener("click", clearV1, false);
+      function clearV1(){ offset.value=0; addDays1.value=31; hide(out1); out1.textContent=""; hide(out1extra); out1extra.textContent=""; }
+      go1.addEventListener("click", runV1, false); clear1.addEventListener("click", clearV1, false);
       offset.addEventListener("keydown", function(e){ if(e.key==="Enter") runV1(); }, false);
       addDays1.addEventListener("keydown", function(e){ if(e.key==="Enter") runV1(); }, false);
 
       // Versiya 2 (tarixlə)
-      var start = $("start"), addDays2 = $("addDays2"), go2 = $("go2"), clear2 = $("clear2");
-      var out2 = $("out2");
-
-      // default olaraq start sahəsinə bu günü yaz
-      (function setToday(){
-        var now = new Date();
-        start.value = toLocalYMD(now);
-      })();
+      var start=$("start"), addDays2=$("addDays2"), go2=$("go2"), clear2=$("clear2"), out2=$("out2"), out2extra=$("out2extra");
+      (function setToday(){ var now=new Date(); start.value=toLocalYMD(now); })();
 
       function runV2(){
-        if(!start.value){ show(out2); out2.textContent = "Zəhmət olmasa başlanğıc tarixini seçin."; return; }
-        var base = new Date(start.value + "T00:00:00");
-        var plus = parseInt(addDays2.value,10);
-        if(isNaN(plus) || plus < 1) plus = 31;
-
-        if(isNaN(base)){ show(out2); out2.textContent = "Tarix düzgün deyil."; return; }
-
-        var end = addDaysLocal(base, plus);
-        out2.textContent = "Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək.";
-        show(out2);
+        if(!start.value){ show(out2); out2.textContent="Zəhmət olmasa başlanğıc tarixini seçin."; return; }
+        var base=new Date(start.value+"T00:00:00"); var plus=parseInt(addDays2.value,10); if(isNaN(plus)||plus<1) plus=31;
+        if(isNaN(base)){ show(out2); out2.textContent="Tarix düzgün deyil."; return; }
+        var end=addDaysLocal(base, plus);
+        out2.textContent="Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək."; show(out2);
+        // Əlavə xətt: seçilən başlanğıc + 3 gün
+        var extraEnd=addDaysLocal(base, 3);
+        out2extra.textContent="Bu ay üçün 8 dərslik paketiniz " + fmtMonthDayYear(extraEnd) + " tarixində bitti."; show(out2extra);
       }
-      function clearV2(){
-        var now = new Date();
-        start.value = toLocalYMD(now);
-        addDays2.value = 31;
-        hide(out2); out2.textContent="";
-      }
-      go2.addEventListener("click", runV2, false);
-      clear2.addEventListener("click", clearV2, false);
+      function clearV2(){ var now=new Date(); start.value=toLocalYMD(now); addDays2.value=31; hide(out2); out2.textContent=""; hide(out2extra); out2extra.textContent=""; }
+      go2.addEventListener("click", runV2, false); clear2.addEventListener("click", clearV2, false);
       start.addEventListener("keydown", function(e){ if(e.key==="Enter") runV2(); }, false);
       addDays2.addEventListener("keydown", function(e){ if(e.key==="Enter") runV2(); }, false);
 
