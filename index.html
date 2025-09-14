@@ -3,64 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Növbəti paket (+31 gün) — iPhone uyğun</title>
+  <title>Növbəti paket — gün əlavə et</title>
   <style>
-    body{font:16px/1.4 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:16px}
-    label{display:block;margin:8px 0 4px}
-    input,button{width:100%;padding:10px 12px;margin:4px 0;border:1px solid #ccc;border-radius:10px}
-    .btn{background:#0ea5e9;color:#fff;border-color:#0ea5e9;font-weight:600}
-    .msg{margin-top:10px;padding:12px;border:1px dashed #94a3b8;border-radius:10px}
-    small{color:#64748b}
+    :root{ --bg:#0b1220; --card:#111827; --border:#334155; --text:#e5e7eb; --muted:#94a3b8; --prim:#0ea5e9; }
+    body{font:16px/1.4 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b1220;color:var(--text);padding:16px}
+    .card{max-width:640px;margin:0 auto;background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:16px}
+    h3{margin:0 0 12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .ctrl{flex:1 1 220px; min-width:180px}
+    label{display:block;margin:6px 0 4px;color:var(--muted);font-size:13px}
+    input,button{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0b1220;color:var(--text)}
+    input:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{background:var(--prim);border-color:var(--prim);color:#fff;font-weight:600;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--text);border-color:var(--border)}
+    .msg{margin-top:12px;padding:12px;border:1px dashed var(--border);border-radius:10px}
+    small{color:var(--muted)}
   </style>
 </head>
 <body>
-  <h3>Növbəti 8 dərslik paket — +31 gün</h3>
+  <div class="card">
+    <h3>Növbəti 8 dərslik paket — bitiş tarixi</h3>
 
-  <label for="offset">Neçə gün əvvəl başlasın? (0 = bu gün)</label>
-  <input id="offset" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="0">
+    <div class="row">
+      <div class="ctrl">
+        <label for="offset">Neçə gün <b>əvvəl</b> başlasın? (0 = bu gün)</label>
+        <input id="offset" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="0">
+      </div>
+      <div class="ctrl">
+        <label for="addDays">Üstünə neçə gün gəlsin?</label>
+        <input id="addDays" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="31">
+      </div>
+    </div>
 
-  <button id="go" type="button" class="btn">Hesabla</button>
+    <div class="actions">
+      <button id="go" type="button" class="btn">Hesabla</button>
+      <button id="clear" type="button" class="btn ghost">Təmizlə</button>
+    </div>
 
-  <div id="out" class="msg" style="display:none"></div>
-  <small>Məsələn: bu gün 14 sentyabrdırsa, 3 yaz → başlanğıc 11 sentyabr sayılacaq → üzərinə 31 gün gələcək.</small>
+    <div id="out" class="msg" style="display:none"></div>
+    <small>Misal: bu gün 14 sentyabrdırsa, <b>3</b> yaz → başlanğıc 11 sentyabr sayılacaq → üstünə <b>31</b> gün gəlinəcək.</small>
+  </div>
 
   <script>
     (function(){
       var months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
-      var $ = function(id){ return document.getElementById(id); };
-      var out = $("out"), offset = $("offset"), go = $("go");
+      function $(id){ return document.getElementById(id); }
+      var out = $("out"), offset = $("offset"), addDays = $("addDays"), go = $("go"), clr = $("clear");
 
       function fmtMonthDayYear(d){
-        var m = months[d.getMonth()];
-        var day = d.getDate();
-        var y = d.getFullYear();
-        return m + " " + day + ", " + y; // Oktyabr 10, 2025
+        return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); // Oktyabr 10, 2025
       }
       function startFrom(today, daysBack){
         var d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         d.setDate(d.getDate() - daysBack);
         return d;
       }
-      function add31(d){
+      function addDaysLocal(d, n){
         var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        x.setDate(x.getDate() + 31);
+        x.setDate(x.getDate() + n);
         return x;
       }
       function run(){
         var back = parseInt(offset.value, 10);
+        var plus = parseInt(addDays.value, 10);
         if (isNaN(back) || back < 0) back = 0;
+        if (isNaN(plus) || plus < 1) plus = 31;
         var now = new Date();
         var start = startFrom(now, back);
-        var end = add31(start);
+        var end = addDaysLocal(start, plus);
         out.style.display = "block";
         out.textContent = "Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək.";
       }
-      go.addEventListener("click", run, false);
+      function clearAll(){
+        offset.value = 0;
+        addDays.value = 31;
+        out.style.display = "none";
+        out.textContent = "";
+      }
 
-      // iOS üçün: Enter basanda da hesablansın
-      offset.addEventListener("keydown", function(e){
-        if(e.key === "Enter"){ run(); }
-      }, false);
+      go.addEventListener("click", run, false);
+      clr.addEventListener("click", clearAll, false);
+
+      // iOS: Enter ilə də işlə
+      offset.addEventListener("keydown", function(e){ if(e.key==="Enter") run(); }, false);
+      addDays.addEventListener("keydown", function(e){ if(e.key==="Enter") run(); }, false);
     })();
   </script>
 </body>
