@@ -3,63 +3,77 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>8+8 Dərs Planı — Sınaq rejimli (iPhone uyğun)</title>
+<title>Dərs Planı — Multi-seçimli təqvim</title>
 <style>
-  :root{--bg:#0b1220;--card:#111827;--muted:#9ca3af;--text:#e5e7eb;--br:#334155;--btn:#0ea5e9}
+  :root{--bg:#0b1220;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--br:#334155;--btn:#0ea5e9;--sel:#22c55e;--bad:#ef4444}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:16px}
-  .wrap{max-width:760px;margin:0 auto}
+  .wrap{max-width:820px;margin:0 auto}
   .card{background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px}
   h1{margin:0 0 8px;font-size:22px}
   p.lead{margin:0 0 12px;color:var(--muted)}
-  .grid{display:flex;gap:12px;flex-wrap:wrap}
-  .ctrl{flex:1 1 250px;min-width:200px}
   label{display:block;margin:6px 0 6px;color:var(--muted);font-size:13px}
-  input,select,textarea,button{
+  input,select,button{
     width:100%;padding:10px 12px;border:1px solid var(--br);border-radius:12px;background:#0b1220;color:var(--text)
   }
-  textarea{min-height:68px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+  input:focus,select:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+  .grid{display:flex;gap:12px;flex-wrap:wrap}
+  .ctrl{flex:1 1 250px;min-width:200px}
+  .seg{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+  .seg button{flex:1 1 120px;padding:10px 12px;border-radius:10px;border:1px solid var(--br);background:#0c1628;color:#e5e7eb;font-weight:700}
+  .seg button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
   .btn{background:var(--btn);border-color:var(--btn);color:#fff;font-weight:700;cursor:pointer}
   .ghost{background:transparent;border-color:var(--br)}
-  .seg{display:flex;gap:8px;flex-wrap:wrap}
-  .seg button{flex:1 1 120px;padding:10px 12px;border-radius:10px;border:1px solid var(--br);background:#0c1628;color:var(--text);font-weight:700}
-  .seg button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
   .box{margin-top:14px;padding:12px;border:1px dashed var(--br);border-radius:12px}
-  .muted{color:var(--muted);font-size:12px}
-  .warn{color:#fbbf24;margin:6px 0}
   .err{color:#f87171;margin-top:6px}
-  ol{margin:10px 0 0;padding-left:20px}
-  .tag{display:inline-block;font-size:12px;padding:2px 8px;border:1px solid var(--br);border-radius:999px;color:var(--muted);margin-left:6px}
-  .hide{display:none}
+  .warn{color:#fbbf24;margin:6px 0}
+  .muted{color:var(--muted);font-size:12px}
+
+  /* Multi-select calendar */
+  .cal{border:1px solid var(--br);border-radius:12px;overflow:hidden}
+  .calHead{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--br);background:#0c1628}
+  .calHead h3{margin:0;font-size:16px}
+  .calHead .nav{display:flex;gap:6px}
+  .calHead button{width:auto}
+  .calGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
+  .dow, .day{padding:9px 0;text-align:center;border-bottom:1px solid var(--br)}
+  .dow{font-size:12px;color:var(--muted);background:#0b1220}
+  .day{cursor:pointer}
+  .day.other{color:#6b7280}
+  .day.sel{background:rgba(34,197,94,.18)}
+  .day.today{outline:2px solid #334155;outline-offset:-2px;border-radius:6px}
+  .badgeWrap{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--br);border-radius:999px;background:#0b1220;font-size:12px}
+  .badge b{color:#fff}
+  .x{background:transparent;border:1px solid #475569;border-radius:8px;padding:2px 6px;color:#e5e7eb;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>8+8 Dərs Planı</h1>
-    <p class="lead">Rejim seç: <b>– Normal</b> (köhnə ayın Dərs 08 + yeni ay 01…08) və ya <b>+ Sınaq</b> (Dərs 01: sınaq + 02…08).</p>
+    <h1>Dərs Planı (multi-seçimli təqvimlə “dərs olmadı” günləri)</h1>
+    <p class="lead">Rejim seç: <b>– Normal</b> və ya <b>+ Sınaq</b>. Həftədə 2 gün seç. “Dərs olmadı” günlərini təqvimdən **bir neçə tarix** seçərək işarələ.</p>
 
-    <!-- Rejim seçimi (+/–) -->
+    <!-- Rejim -->
     <div class="seg" role="group" aria-label="Sınaq rejimi">
-      <button id="modeTrialNo" type="button" aria-pressed="true">– Normal</button>
-      <button id="modeTrialYes" type="button" aria-pressed="false">+ Sınaq</button>
+      <button id="modeNo"  type="button" aria-pressed="true">– Normal</button>
+      <button id="modeYes" type="button" aria-pressed="false">+ Sınaq</button>
     </div>
 
-    <div class="grid" style="margin-top:8px">
-      <!-- Normal rejim: 7 dərs bitib -->
-      <div id="paneNormal" class="ctrl">
-        <label for="ended">7 dərs <b>necə vaxt bitdi?</b> (YYYY-MM-DD)</label>
+    <div class="grid">
+      <!-- Normal: 7 dərs bitən tarix -->
+      <div class="ctrl" id="paneNormal">
+        <label for="ended">7 dərs nə vaxt bitdi? (YYYY-MM-DD)</label>
         <input id="ended" type="date">
         <div class="muted">“Dərs 08” bu tarixdən <b>sonrakı</b> uyğun günə düşəcək.</div>
       </div>
 
-      <!-- Sınaq rejimi: sınaq tarixi -->
-      <div id="paneTrial" class="ctrl hide">
-        <label for="trialDate"><b>Sınaq dərsi</b> tarixi (YYYY-MM-DD)</label>
-        <input id="trialDate" type="date">
-        <div class="muted">“Dərs 01: Sınaq dərsi” bu tarixdə qeyd olunacaq.</div>
+      <!-- Sınaq: sınaq tarixi -->
+      <div class="ctrl" id="paneTrial" style="display:none">
+        <label for="trial">Sınaq dərsi tarixi (YYYY-MM-DD)</label>
+        <input id="trial" type="date">
+        <div class="muted">“Dərs 01: Sınaq dərsi” bu tarixdə qeyd olunur.</div>
       </div>
 
       <div class="ctrl">
@@ -88,159 +102,233 @@
         </div>
         <div class="muted">Məs: 1 və 5.</div>
       </div>
-
-      <div class="ctrl" style="flex:1 1 100%">
-        <label for="skip">Dərs <b>olmadı</b> tarixləri (istəyə bağlı)</label>
-        <textarea id="skip" placeholder="YYYY-MM-DD, YYYY-MM-DD ..."></textarea>
-        <div class="muted">Boş buraxsan — nəzərə alınmayacaq. Tarixləri vergül ilə ayır.</div>
-      </div>
     </div>
 
+    <!-- Multi-select Calendar for “skip days” -->
+    <label style="margin-top:8px">Dərs <b>olmadı</b> günləri (təqvimdən çox-seçim):</label>
+    <div class="cal" id="calendar">
+      <div class="calHead">
+        <div class="nav">
+          <button id="prev" type="button">⟵</button>
+          <button id="todayBtn" type="button">Bugün</button>
+          <button id="next" type="button">⟶</button>
+        </div>
+        <h3 id="calTitle">Ay, İl</h3>
+        <div></div>
+      </div>
+      <div class="calGrid" id="calGrid">
+        <!-- headers -->
+      </div>
+    </div>
+    <div class="badgeWrap" id="pickedWrap"></div>
+
     <div class="actions">
-      <button id="go" type="button" class="btn">Hesabla</button>
-      <button id="clear" type="button" class="ghost">Təmizlə</button>
+      <button id="go" class="btn" type="button">Hesabla</button>
+      <button id="clear" class="ghost" type="button">Təmizlə</button>
     </div>
 
     <div id="err" class="err" hidden></div>
 
-    <div id="outOld" class="box hide"></div>
-    <div id="outNew" class="box hide">
-      <div><b>Yeni ay planı</b><span id="daysTag" class="tag"></span></div>
+    <div id="outOld" class="box" hidden></div>
+    <div id="outNew" class="box" hidden>
+      <div><b>Yeni ay planı</b> — <span id="daysTag" class="muted"></span></div>
       <ol id="list"></ol>
     </div>
 
-    <div class="muted">Gün xəritəsi: 1-B.e., 2-Ç.a., 3-Ç., 4-C.a., 5-C., 6-Ş., 7-B.</div>
+    <div class="muted" style="margin-top:6px">Gün xəritəsi: 1-B.e., 2-Ç.a., 3-Ç., 4-C.a., 5-C., 6-Ş., 7-B.</div>
   </div>
 </div>
 
 <script>
 (function(){
-  // Görünən mətndə ay/gün adları
+  // Ay / gün adları
   const months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
-  const weekdays = ["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"]; // JS: 0..6
-  const jsDowToNum = d => d===0 ? 7 : d; // 0→7, 1→1 ...
+  const weekdays = ["B.e.","Ç.a.","Ç.","C.a.","C.","Ş.","B."]; // header üçün qısa
+  const weekdaysFull = ["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"];
+
+  // 1..7 ↔ JS getDay()
+  const jsDowToNum = d => d===0 ? 7 : d;
   const numToName = n => ["","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə","Bazar"][n];
 
   const $ = id => document.getElementById(id);
-  const modeNo = $("modeTrialNo"), modeYes = $("modeTrialYes");
-  const paneNormal = $("paneNormal"), paneTrial = $("paneTrial");
-  const ended = $("ended"), trialDate = $("trialDate");
-  const day1 = $("day1"), day2 = $("day2"), skip = $("skip");
-  const go = $("go"), clearBtn = $("clear");
-  const err = $("err"), outOld = $("outOld"), outNew = $("outNew"), list = $("list"), daysTag = $("daysTag");
+  const modeNo=$("modeNo"), modeYes=$("modeYes"), paneNormal=$("paneNormal"), paneTrial=$("paneTrial");
+  const ended=$("ended"), trial=$("trial"), day1=$("day1"), day2=$("day2");
+  const go=$("go"), clearBtn=$("clear"), err=$("err"), outOld=$("outOld"), outNew=$("outNew"), list=$("list"), daysTag=$("daysTag");
 
-  // Rejim dəyişimi
-  function setMode(trial){
-    modeNo.setAttribute("aria-pressed", String(!trial));
-    modeYes.setAttribute("aria-pressed", String(trial));
-    paneNormal.classList.toggle("hide", trial);
-    paneTrial.classList.toggle("hide", !trial);
+  // ==== MULTI-SELECT CALENDAR ====
+  const calTitle=$("calTitle"), calGrid=$("calGrid"), pickedWrap=$("pickedWrap");
+  const prevBtn=$("prev"), nextBtn=$("next"), todayBtn=$("todayBtn");
+
+  // Selected dates (YYYY-MM-DD)
+  const picked = new Set();
+
+  // Current view month
+  let view = (function(){ const n=new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); })();
+
+  function toYMD(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
+  function parseYMD(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(!m) return null; return new Date(+m[1],+m[2]-1,+m[3]); }
+  function addDays(d,n){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()+n); return x; }
+  function fmtFull(d){ return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${weekdaysFull[d.getDay()]}`; }
+
+  function renderPickedBadges(){
+    pickedWrap.innerHTML = "";
+    // Sort for pretty view
+    const arr = Array.from(picked).sort();
+    arr.forEach(s=>{
+      const d=parseYMD(s);
+      const b=document.createElement("div");
+      b.className="badge";
+      b.innerHTML=`<b>${s}</b> <span>${weekdaysFull[d.getDay()]}</span> <button class="x" data-x="${s}" type="button">sil</button>`;
+      pickedWrap.appendChild(b);
+    });
+    // bind removes
+    pickedWrap.querySelectorAll("button.x").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        const val=e.currentTarget.getAttribute("data-x");
+        picked.delete(val);
+        renderCalendar(); renderPickedBadges();
+      });
+    });
+  }
+
+  function renderCalendar(){
+    // Build headers Mon..Sun (B.e. first). We'll align grid starting Monday.
+    calTitle.textContent = `${months[view.getMonth()]} ${view.getFullYear()}`;
+    calGrid.innerHTML = "";
+    // Headers
+    for(let i=0;i<7;i++){
+      const h=document.createElement("div");
+      h.className="dow"; h.textContent=weekdays[i];
+      calGrid.appendChild(h);
+    }
+    // Figure start day index (Mon=1..Sun=7)
+    const first = new Date(view.getFullYear(), view.getMonth(), 1);
+    const firstDow = jsDowToNum(first.getDay()); // 1..7
+    const leading = (firstDow + 6) % 7; // how many cells before Monday
+
+    // We will show 6 rows (42 cells) for simplicity
+    let start = addDays(first, -leading);
+    const todayStr = toYMD(new Date());
+
+    for(let i=0;i<42;i++){
+      const slot = addDays(start, i);
+      const cell = document.createElement("div");
+      const ymd = toYMD(slot);
+      const inMonth = slot.getMonth() === view.getMonth();
+
+      cell.className = "day";
+      if(!inMonth) cell.classList.add("other");
+      if(ymd===todayStr) cell.classList.add("today");
+      if(picked.has(ymd)) cell.classList.add("sel");
+
+      cell.textContent = slot.getDate();
+      cell.setAttribute("data-ymd", ymd);
+      cell.setAttribute("role","button");
+      cell.addEventListener("click", ()=>{
+        if(picked.has(ymd)) picked.delete(ymd); else picked.add(ymd);
+        renderCalendar(); renderPickedBadges();
+      });
+
+      calGrid.appendChild(cell);
+    }
+  }
+
+  prevBtn.addEventListener("click", ()=>{ view = new Date(view.getFullYear(), view.getMonth()-1, 1); renderCalendar(); });
+  nextBtn.addEventListener("click", ()=>{ view = new Date(view.getFullYear(), view.getMonth()+1, 1); renderCalendar(); });
+  todayBtn.addEventListener("click", ()=>{ const n=new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); renderCalendar(); });
+
+  // ==== MODE SWITCH ====
+  function setMode(trialMode){
+    modeNo.setAttribute("aria-pressed", String(!trialMode));
+    modeYes.setAttribute("aria-pressed", String(trialMode));
+    paneNormal.style.display = trialMode ? "none":"block";
+    paneTrial.style.display = trialMode ? "block":"none";
   }
   modeNo.addEventListener("click", ()=>setMode(false));
   modeYes.addEventListener("click", ()=>setMode(true));
 
-  // Util
-  function parseYMD(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(!m) return null; return new Date(+m[1],+m[2]-1,+m[3]); }
-  function toYMD(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
-  function fmtFull(d){ return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${weekdays[d.getDay()]}`; }
-  function addDays(d,n){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()+n); return x; }
-
-  function validate(){
-    err.hidden = true;
-    const trialMode = modeYes.getAttribute("aria-pressed")==="true";
-    let base=null, trial=null;
-
-    if(trialMode){
-      trial = trialDate.value ? parseYMD(trialDate.value) : null;
-      if(!trial){ err.textContent="Sınaq rejimində sınaq dərsinin tarixini seçin (YYYY-MM-DD)."; err.hidden=false; return null; }
-    }else{
-      base = ended.value ? parseYMD(ended.value) : null;
-      if(!base){ err.textContent="Normal rejimdə 7 dərsin bitdiyi tarixi seçin (YYYY-MM-DD)."; err.hidden=false; return null; }
-    }
-
-    const g1=parseInt(day1.value,10), g2=parseInt(day2.value,10);
-    if(!(g1>=1&&g1<=7) || !(g2>=1&&g2<=7) || g1===g2){
-      err.textContent="Həftədə iki fərqli gün seçin (məs: 1 və 5)."; err.hidden=false; return null;
-    }
-    // skip set
-    const s=new Set(); const raw=skip.value.trim();
-    if(raw){ raw.split(",").map(t=>t.trim()).forEach(v=>{ const d=parseYMD(v); if(d) s.add(toYMD(d)); }); }
-
-    return {trialMode, base, trial, days:[g1,g2].sort((a,b)=>a-b), skip:s};
-  }
-
-  // Bir tarixdən SONRA gələn ilk uyğun dərs günü (skip nəzərə alınaraq)
-  function nextAfter(date, daysAllowed, skipSet){
+  // ==== Planner core (eyni məntiq) ====
+  function nextAfter(date, allowedDays, skipSet){
     let d = addDays(date, 1);
     while(true){
-      const okDay = daysAllowed.includes(jsDowToNum(d.getDay()));
+      const okDay = allowedDays.includes(jsDowToNum(d.getDay()));
       const isSkip = skipSet.has(toYMD(d));
       if(okDay && !isSkip) return {date:d, moved:false, movedFrom:null};
       if(okDay && isSkip){
-        const from=d;
-        do{ d=addDays(d,1); } while( !daysAllowed.includes(jsDowToNum(d.getDay())) || skipSet.has(toYMD(d)) );
+        const from = d;
+        do { d = addDays(d,1); }
+        while( !allowedDays.includes(jsDowToNum(d.getDay())) || skipSet.has(toYMD(d)) );
         return {date:d, moved:true, movedFrom:from};
       }
       d = addDays(d,1);
     }
   }
-
-  // Ard-arda N dərs
   function buildPlan(startExclusive, daysAllowed, skipSet, N){
-    const res=[]; let cursor=startExclusive;
-    for(let i=1;i<=N;i++){
-      const step = nextAfter(cursor, daysAllowed, skipSet);
-      res.push(step); cursor = step.date;
-    }
+    const res=[]; let cur = startExclusive;
+    for(let i=1;i<=N;i++){ const step=nextAfter(cur, daysAllowed, skipSet); res.push(step); cur=step.date; }
     return res;
   }
 
-  function run(){
-    const p=validate(); if(!p) return;
+  function validate(){
+    err.hidden = true;
+    const trialMode = modeYes.getAttribute("aria-pressed")==="true";
+    const g1 = parseInt(day1.value,10), g2 = parseInt(day2.value,10);
+    if(!(g1>=1&&g1<=7) || !(g2>=1&&g2<=7) || g1===g2){
+      err.textContent = "Həftədə iki fərqli gün seçin (məs: 1 və 5)."; err.hidden=false; return null;
+    }
+    // skip set from picked calendar
+    const skipSet = new Set(Array.from(picked));
+    if(trialMode){
+      const t = trial.value ? parseYMD(trial.value) : null;
+      if(!t){ err.textContent = "Sınaq rejimində sınaq dərsinin tarixini seçin."; err.hidden=false; return null; }
+      return {trialMode:true, trial:t, days:[g1,g2].sort((a,b)=>a-b), skip:skipSet};
+    }else{
+      const b = ended.value ? parseYMD(ended.value) : null;
+      if(!b){ err.textContent = "Normal rejimdə 7 dərsin bitdiyi tarixi seçin."; err.hidden=false; return null; }
+      return {trialMode:false, base:b, days:[g1,g2].sort((a,b)=>a-b), skip:skipSet};
+    }
+  }
 
-    // Hazırlıq
-    outOld.classList.add("hide"); outNew.classList.add("hide"); list.innerHTML=""; daysTag.textContent="";
+  function run(){
+    const p = validate(); if(!p) return;
+    outOld.hidden = true; outNew.hidden = true; list.innerHTML = "";
     daysTag.textContent = `Günlər: ${p.days[0]} (${numToName(p.days[0])}), ${p.days[1]} (${numToName(p.days[1])})`;
 
     if(p.trialMode){
-      // --- Sınaq rejimi ---
-      outNew.classList.remove("hide");
-      // Dərs 01 = sınaq (skip siyahısında olsa belə, sınaq artıq keçirilib kimi sayılır)
-      const li0=document.createElement("li");
-      li0.innerHTML=`<b>Dərs 01:</b> Sınaq dərsi — ${fmtFull(p.trial)}`;
+      // Dərs 01 = sınaq
+      outNew.hidden = false;
+      const li0 = document.createElement("li");
+      li0.innerHTML = `<b>Dərs 01:</b> Sınaq dərsi — ${fmtFull(p.trial)}`;
       list.appendChild(li0);
-
-      // Sonrakı 7 dərs (02…08) — sınaq tarixindən SONRA
+      // 02..08
       const plan = buildPlan(p.trial, p.days, p.skip, 7);
       plan.forEach((item, idx)=>{
-        const n = idx+2; // 02..08
-        const li=document.createElement("li");
-        li.innerHTML=`<b>Dərs ${String(n).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+        const n = idx+2;
+        const li = document.createElement("li");
+        li.innerHTML = `<b>Dərs ${String(n).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
         list.appendChild(li);
         if(item.moved){
           const note=document.createElement("div"); note.className="warn";
-          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          note.textContent = `Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
           list.appendChild(note);
         }
       });
     }else{
-      // --- Normal rejim ---
-      // Köhnə ayın Dərs 08 (7-dən sonra 1 dərs)
+      // Köhnə ay Dərs 08
       const old8 = nextAfter(p.base, p.days, p.skip);
-      outOld.classList.remove("hide");
+      outOld.hidden = false;
       outOld.innerHTML = `<b>Köhnə ay — Dərs 08:</b> ${fmtFull(old8.date)}`
         + (old8.moved ? `<div class="warn">Bu gün dərs olmadı: ${fmtFull(old8.movedFrom)} → növbəti uyğun günə keçirildi.</div>` : "");
-
-      // Yeni ay 01…08 (başlanğıc: köhnə ayın 08-dən SONRA)
+      // Yeni ay 01..08
+      outNew.hidden = false;
       const plan = buildPlan(old8.date, p.days, p.skip, 8);
-      outNew.classList.remove("hide");
       plan.forEach((item, idx)=>{
-        const li=document.createElement("li");
-        li.innerHTML=`<b>Dərs ${String(idx+1).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+        const li = document.createElement("li");
+        li.innerHTML = `<b>Dərs ${String(idx+1).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
         list.appendChild(li);
         if(item.moved){
           const note=document.createElement("div"); note.className="warn";
-          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          note.textContent = `Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
           list.appendChild(note);
         }
       });
@@ -248,20 +336,24 @@
   }
 
   function clearAll(){
-    ended.value=""; trialDate.value=""; day1.value=""; day2.value=""; skip.value="";
-    err.hidden=true; outOld.classList.add("hide"); outNew.classList.add("hide"); list.innerHTML=""; daysTag.textContent="";
+    ended.value = ""; trial.value = ""; day1.value = ""; day2.value = "";
+    picked.clear(); renderCalendar(); renderPickedBadges();
+    err.hidden = true; outOld.hidden = true; outNew.hidden = true; list.innerHTML = ""; daysTag.textContent = "";
     setMode(false);
   }
 
-  // Eventlər
+  function setMode(trialMode){ modeNo.click(); if(trialMode) modeYes.click(); }
+
+  // Events
   go.addEventListener("click", run);
   clearBtn.addEventListener("click", clearAll);
-  [ended, trialDate, day1, day2, skip].forEach(el=>el.addEventListener("keydown", e=>{ if(e.key==="Enter") run(); }));
+  [ended, trial, day1, day2].forEach(el=>el.addEventListener("keydown", e=>{ if(e.key==="Enter") run(); }));
 
-  // Konfor: default tarixləri bugünkü günlə doldur
+  // Init defaults
   const now=new Date();
   const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  ended.value=today; trialDate.value=today;
+  ended.value=today; trial.value=today;
+  renderCalendar(); renderPickedBadges();
 })();
 </script>
 </body>
