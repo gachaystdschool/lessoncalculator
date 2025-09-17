@@ -1,141 +1,268 @@
 <!doctype html>
 <html lang="az">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Növbəti 8 dərslik paket — iki versiya</title>
-  <style>
-    :root{ --bg:#0b1220; --card:#111827; --border:#334155; --text:#e5e7eb; --muted:#94a3b8; --prim:#0ea5e9; }
-    body{font:16px/1.4 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--text);padding:16px}
-    .card{max-width:720px;margin:0 auto;background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:16px}
-    h3{margin:0 0 12px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
-    .tab{appearance:none;border:1px solid var(--border);background:#0c1628;color:var(--text);padding:8px 12px;border-radius:999px;cursor:pointer}
-    .tab[aria-pressed="true"]{background:var(--prim);border-color:var(--prim);color:#fff}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-    .ctrl{flex:1 1 240px; min-width:200px}
-    label{display:block;margin:6px 0 4px;color:var(--muted);font-size:13px}
-    input,button{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0b1220;color:var(--text)}
-    input:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-    .btn{background:var(--prim);border-color:var(--prim);color:#fff;font-weight:600;cursor:pointer}
-    .btn.ghost{background:transparent;color:var(--text);border-color:var(--border)}
-    .msg{margin-top:12px;padding:12px;border:1px dashed var(--border);border-radius:10px}
-    .muted{color:var(--muted);font-size:12px}
-    .hide{display:none}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8+8 Dərs Planı — Sınaq rejimli (iPhone uyğun)</title>
+<style>
+  :root{--bg:#0b1220;--card:#111827;--muted:#9ca3af;--text:#e5e7eb;--br:#334155;--btn:#0ea5e9}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:16px}
+  .wrap{max-width:760px;margin:0 auto}
+  .card{background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px}
+  h1{margin:0 0 8px;font-size:22px}
+  p.lead{margin:0 0 12px;color:var(--muted)}
+  .grid{display:flex;gap:12px;flex-wrap:wrap}
+  .ctrl{flex:1 1 250px;min-width:200px}
+  label{display:block;margin:6px 0 6px;color:var(--muted);font-size:13px}
+  input,select,textarea,button{
+    width:100%;padding:10px 12px;border:1px solid var(--br);border-radius:12px;background:#0b1220;color:var(--text)
+  }
+  textarea{min-height:68px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .btn{background:var(--btn);border-color:var(--btn);color:#fff;font-weight:700;cursor:pointer}
+  .ghost{background:transparent;border-color:var(--br)}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
+  .seg button{flex:1 1 120px;padding:10px 12px;border-radius:10px;border:1px solid var(--br);background:#0c1628;color:var(--text);font-weight:700}
+  .seg button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
+  .box{margin-top:14px;padding:12px;border:1px dashed var(--br);border-radius:12px}
+  .muted{color:var(--muted);font-size:12px}
+  .warn{color:#fbbf24;margin:6px 0}
+  .err{color:#f87171;margin-top:6px}
+  ol{margin:10px 0 0;padding-left:20px}
+  .tag{display:inline-block;font-size:12px;padding:2px 8px;border:1px solid var(--br);border-radius:999px;color:var(--muted);margin-left:6px}
+  .hide{display:none}
+</style>
 </head>
 <body>
+<div class="wrap">
   <div class="card">
-    <h3>Növbəti 8 dərslik paket — bitiş tarixi</h3>
+    <h1>8+8 Dərs Planı</h1>
+    <p class="lead">Rejim seç: <b>– Normal</b> (köhnə ayın Dərs 08 + yeni ay 01…08) və ya <b>+ Sınaq</b> (Dərs 01: sınaq + 02…08).</p>
 
-    <!-- Rejim seçimi -->
-    <div class="tabs">
-      <button id="tabDays" class="tab" type="button" aria-pressed="true">Versiya 1 — Günlə (bu gündən çıx)</button>
-      <button id="tabDate" class="tab" type="button" aria-pressed="false">Versiya 2 — Tarixlə (özün seç)</button>
+    <!-- Rejim seçimi (+/–) -->
+    <div class="seg" role="group" aria-label="Sınaq rejimi">
+      <button id="modeTrialNo" type="button" aria-pressed="true">– Normal</button>
+      <button id="modeTrialYes" type="button" aria-pressed="false">+ Sınaq</button>
     </div>
 
-    <!-- Versiya 1: Günlə -->
-    <div id="paneDays">
-      <div class="row">
-        <div class="ctrl">
-          <label for="offset">Neçə gün <b>əvvəl</b> başlasın? (0 = bu gün)</label>
-          <input id="offset" type="number" inputmode="numeric" pattern="[0-9]*" min="0" value="0">
-        </div>
-        <div class="ctrl">
-          <label for="addDays1">Üstünə neçə gün gəlsin?</label>
-          <input id="addDays1" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="31">
-        </div>
+    <div class="grid" style="margin-top:8px">
+      <!-- Normal rejim: 7 dərs bitib -->
+      <div id="paneNormal" class="ctrl">
+        <label for="ended">7 dərs <b>necə vaxt bitdi?</b> (YYYY-MM-DD)</label>
+        <input id="ended" type="date">
+        <div class="muted">“Dərs 08” bu tarixdən <b>sonrakı</b> uyğun günə düşəcək.</div>
       </div>
-      <div class="actions">
-        <button id="go1" type="button" class="btn">Hesabla</button>
-        <button id="clear1" type="button" class="btn ghost">Təmizlə</button>
+
+      <!-- Sınaq rejimi: sınaq tarixi -->
+      <div id="paneTrial" class="ctrl hide">
+        <label for="trialDate"><b>Sınaq dərsi</b> tarixi (YYYY-MM-DD)</label>
+        <input id="trialDate" type="date">
+        <div class="muted">“Dərs 01: Sınaq dərsi” bu tarixdə qeyd olunacaq.</div>
       </div>
-      <div id="out1" class="msg hide"></div>
-      <div id="out1extra" class="msg hide"></div>
-      <div class="muted">Qeyd: Versiya 1-də əlavə xətt çıxır — (bu gün − yazdığın gün) + <b>3 gün</b> ⇒ “Bu ay üçün 8 dərslik paketiniz … tarixində bitti.”</div>
+
+      <div class="ctrl">
+        <label>Həftədə <b>iki gün</b> seç (1–7)</label>
+        <div class="grid">
+          <select id="day1" aria-label="Gün 1">
+            <option value="">— Gün 1 —</option>
+            <option value="1">1 (Bazar ertəsi)</option>
+            <option value="2">2 (Çərşənbə axşamı)</option>
+            <option value="3">3 (Çərşənbə)</option>
+            <option value="4">4 (Cümə axşamı)</option>
+            <option value="5">5 (Cümə)</option>
+            <option value="6">6 (Şənbə)</option>
+            <option value="7">7 (Bazar)</option>
+          </select>
+          <select id="day2" aria-label="Gün 2">
+            <option value="">— Gün 2 —</option>
+            <option value="1">1 (Bazar ertəsi)</option>
+            <option value="2">2 (Çərşənbə axşamı)</option>
+            <option value="3">3 (Çərşənbə)</option>
+            <option value="4">4 (Cümə axşamı)</option>
+            <option value="5">5 (Cümə)</option>
+            <option value="6">6 (Şənbə)</option>
+            <option value="7">7 (Bazar)</option>
+          </select>
+        </div>
+        <div class="muted">Məs: 1 və 5.</div>
+      </div>
+
+      <div class="ctrl" style="flex:1 1 100%">
+        <label for="skip">Dərs <b>olmadı</b> tarixləri (istəyə bağlı)</label>
+        <textarea id="skip" placeholder="YYYY-MM-DD, YYYY-MM-DD ..."></textarea>
+        <div class="muted">Boş buraxsan — nəzərə alınmayacaq. Tarixləri vergül ilə ayır.</div>
+      </div>
     </div>
 
-    <!-- Versiya 2: Tarixlə -->
-    <div id="paneDate" class="hide">
-      <div class="row">
-        <div class="ctrl">
-          <label for="start">Başlanğıc tarixi seç</label>
-          <input id="start" type="date">
-        </div>
-        <div class="ctrl">
-          <label for="addDays2">Üstünə neçə gün gəlsin?</label>
-          <input id="addDays2" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="31">
-        </div>
-      </div>
-      <div class="actions">
-        <button id="go2" type="button" class="btn">Hesabla</button>
-        <button id="clear2" type="button" class="btn ghost">Təmizlə</button>
-      </div>
-      <div id="out2" class="msg hide"></div>
-      <div id="out2extra" class="msg hide"></div>
-      <div class="muted">Qeyd: Versiya 2 üçün də əlavə xətt əlavə edildi — (seçilən başlanğıc tarix) + <b>3 gün</b> ⇒ “Bu ay üçün 8 dərslik paketiniz … tarixində bitti.”</div>
+    <div class="actions">
+      <button id="go" type="button" class="btn">Hesabla</button>
+      <button id="clear" type="button" class="ghost">Təmizlə</button>
     </div>
+
+    <div id="err" class="err" hidden></div>
+
+    <div id="outOld" class="box hide"></div>
+    <div id="outNew" class="box hide">
+      <div><b>Yeni ay planı</b><span id="daysTag" class="tag"></span></div>
+      <ol id="list"></ol>
+    </div>
+
+    <div class="muted">Gün xəritəsi: 1-B.e., 2-Ç.a., 3-Ç., 4-C.a., 5-C., 6-Ş., 7-B.</div>
   </div>
+</div>
 
-  <script>
-    (function(){
-      // Ay adları (M dd, yyyy)
-      var months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
-      function fmtMonthDayYear(d){ return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
-      function toLocalYMD(d){ var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return y+"-"+m+"-"+dd; }
-      function startFromTodayMinus(daysBack){ var now=new Date(); var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()); d.setDate(d.getDate()-daysBack); return d; }
-      function addDaysLocal(d, n){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()+n); return x; }
-      function $(id){ return document.getElementById(id); }
-      function show(el){ el.classList.remove("hide"); }
-      function hide(el){ el.classList.add("hide"); }
+<script>
+(function(){
+  // Görünən mətndə ay/gün adları
+  const months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
+  const weekdays = ["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"]; // JS: 0..6
+  const jsDowToNum = d => d===0 ? 7 : d; // 0→7, 1→1 ...
+  const numToName = n => ["","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə","Bazar"][n];
 
-      // Tablar
-      var tabDays=$("tabDays"), tabDate=$("tabDate"), paneDays=$("paneDays"), paneDate=$("paneDate");
-      function activate(tab){
-        if(tab==="days"){ tabDays.setAttribute("aria-pressed","true"); tabDate.setAttribute("aria-pressed","false"); paneDays.classList.remove("hide"); paneDate.classList.add("hide"); }
-        else{ tabDays.setAttribute("aria-pressed","false"); tabDate.setAttribute("aria-pressed","true"); paneDays.classList.add("hide"); paneDate.classList.remove("hide"); }
+  const $ = id => document.getElementById(id);
+  const modeNo = $("modeTrialNo"), modeYes = $("modeTrialYes");
+  const paneNormal = $("paneNormal"), paneTrial = $("paneTrial");
+  const ended = $("ended"), trialDate = $("trialDate");
+  const day1 = $("day1"), day2 = $("day2"), skip = $("skip");
+  const go = $("go"), clearBtn = $("clear");
+  const err = $("err"), outOld = $("outOld"), outNew = $("outNew"), list = $("list"), daysTag = $("daysTag");
+
+  // Rejim dəyişimi
+  function setMode(trial){
+    modeNo.setAttribute("aria-pressed", String(!trial));
+    modeYes.setAttribute("aria-pressed", String(trial));
+    paneNormal.classList.toggle("hide", trial);
+    paneTrial.classList.toggle("hide", !trial);
+  }
+  modeNo.addEventListener("click", ()=>setMode(false));
+  modeYes.addEventListener("click", ()=>setMode(true));
+
+  // Util
+  function parseYMD(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(!m) return null; return new Date(+m[1],+m[2]-1,+m[3]); }
+  function toYMD(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
+  function fmtFull(d){ return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${weekdays[d.getDay()]}`; }
+  function addDays(d,n){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()+n); return x; }
+
+  function validate(){
+    err.hidden = true;
+    const trialMode = modeYes.getAttribute("aria-pressed")==="true";
+    let base=null, trial=null;
+
+    if(trialMode){
+      trial = trialDate.value ? parseYMD(trialDate.value) : null;
+      if(!trial){ err.textContent="Sınaq rejimində sınaq dərsinin tarixini seçin (YYYY-MM-DD)."; err.hidden=false; return null; }
+    }else{
+      base = ended.value ? parseYMD(ended.value) : null;
+      if(!base){ err.textContent="Normal rejimdə 7 dərsin bitdiyi tarixi seçin (YYYY-MM-DD)."; err.hidden=false; return null; }
+    }
+
+    const g1=parseInt(day1.value,10), g2=parseInt(day2.value,10);
+    if(!(g1>=1&&g1<=7) || !(g2>=1&&g2<=7) || g1===g2){
+      err.textContent="Həftədə iki fərqli gün seçin (məs: 1 və 5)."; err.hidden=false; return null;
+    }
+    // skip set
+    const s=new Set(); const raw=skip.value.trim();
+    if(raw){ raw.split(",").map(t=>t.trim()).forEach(v=>{ const d=parseYMD(v); if(d) s.add(toYMD(d)); }); }
+
+    return {trialMode, base, trial, days:[g1,g2].sort((a,b)=>a-b), skip:s};
+  }
+
+  // Bir tarixdən SONRA gələn ilk uyğun dərs günü (skip nəzərə alınaraq)
+  function nextAfter(date, daysAllowed, skipSet){
+    let d = addDays(date, 1);
+    while(true){
+      const okDay = daysAllowed.includes(jsDowToNum(d.getDay()));
+      const isSkip = skipSet.has(toYMD(d));
+      if(okDay && !isSkip) return {date:d, moved:false, movedFrom:null};
+      if(okDay && isSkip){
+        const from=d;
+        do{ d=addDays(d,1); } while( !daysAllowed.includes(jsDowToNum(d.getDay())) || skipSet.has(toYMD(d)) );
+        return {date:d, moved:true, movedFrom:from};
       }
-      tabDays.addEventListener("click", function(){ activate("days"); }, false);
-      tabDate.addEventListener("click", function(){ activate("date"); }, false);
+      d = addDays(d,1);
+    }
+  }
 
-      // Versiya 1 (günlə)
-      var offset=$("offset"), addDays1=$("addDays1"), go1=$("go1"), clear1=$("clear1"), out1=$("out1"), out1extra=$("out1extra");
-      function runV1(){
-        var back=parseInt(offset.value,10); var plus=parseInt(addDays1.value,10);
-        if(isNaN(back)||back<0) back=0; if(isNaN(plus)||plus<1) plus=31;
-        var start=startFromTodayMinus(back), end=addDaysLocal(start, plus);
-        out1.textContent="Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək."; show(out1);
-        var extraEnd=addDaysLocal(start, 3);
-        out1extra.textContent="Bu ay üçün 8 dərslik paketiniz " + fmtMonthDayYear(extraEnd) + " tarixində bitti."; show(out1extra);
-      }
-      function clearV1(){ offset.value=0; addDays1.value=31; hide(out1); out1.textContent=""; hide(out1extra); out1extra.textContent=""; }
-      go1.addEventListener("click", runV1, false); clear1.addEventListener("click", clearV1, false);
-      offset.addEventListener("keydown", function(e){ if(e.key==="Enter") runV1(); }, false);
-      addDays1.addEventListener("keydown", function(e){ if(e.key==="Enter") runV1(); }, false);
+  // Ard-arda N dərs
+  function buildPlan(startExclusive, daysAllowed, skipSet, N){
+    const res=[]; let cursor=startExclusive;
+    for(let i=1;i<=N;i++){
+      const step = nextAfter(cursor, daysAllowed, skipSet);
+      res.push(step); cursor = step.date;
+    }
+    return res;
+  }
 
-      // Versiya 2 (tarixlə)
-      var start=$("start"), addDays2=$("addDays2"), go2=$("go2"), clear2=$("clear2"), out2=$("out2"), out2extra=$("out2extra");
-      (function setToday(){ var now=new Date(); start.value=toLocalYMD(now); })();
+  function run(){
+    const p=validate(); if(!p) return;
 
-      function runV2(){
-        if(!start.value){ show(out2); out2.textContent="Zəhmət olmasa başlanğıc tarixini seçin."; return; }
-        var base=new Date(start.value+"T00:00:00"); var plus=parseInt(addDays2.value,10); if(isNaN(plus)||plus<1) plus=31;
-        if(isNaN(base)){ show(out2); out2.textContent="Tarix düzgün deyil."; return; }
-        var end=addDaysLocal(base, plus);
-        out2.textContent="Şagirdin növbəti 8 dərslik paketi " + fmtMonthDayYear(end) + " bitəcək."; show(out2);
-        // Əlavə xətt: seçilən başlanğıc + 3 gün
-        var extraEnd=addDaysLocal(base, 3);
-        out2extra.textContent="Bu ay üçün 8 dərslik paketiniz " + fmtMonthDayYear(extraEnd) + " tarixində bitti."; show(out2extra);
-      }
-      function clearV2(){ var now=new Date(); start.value=toLocalYMD(now); addDays2.value=31; hide(out2); out2.textContent=""; hide(out2extra); out2extra.textContent=""; }
-      go2.addEventListener("click", runV2, false); clear2.addEventListener("click", clearV2, false);
-      start.addEventListener("keydown", function(e){ if(e.key==="Enter") runV2(); }, false);
-      addDays2.addEventListener("keydown", function(e){ if(e.key==="Enter") runV2(); }, false);
+    // Hazırlıq
+    outOld.classList.add("hide"); outNew.classList.add("hide"); list.innerHTML=""; daysTag.textContent="";
+    daysTag.textContent = `Günlər: ${p.days[0]} (${numToName(p.days[0])}), ${p.days[1]} (${numToName(p.days[1])})`;
 
-      // İlk açılışda Versiya 1 aktiv olsun
-      activate("days");
-    })();
-  </script>
+    if(p.trialMode){
+      // --- Sınaq rejimi ---
+      outNew.classList.remove("hide");
+      // Dərs 01 = sınaq (skip siyahısında olsa belə, sınaq artıq keçirilib kimi sayılır)
+      const li0=document.createElement("li");
+      li0.innerHTML=`<b>Dərs 01:</b> Sınaq dərsi — ${fmtFull(p.trial)}`;
+      list.appendChild(li0);
+
+      // Sonrakı 7 dərs (02…08) — sınaq tarixindən SONRA
+      const plan = buildPlan(p.trial, p.days, p.skip, 7);
+      plan.forEach((item, idx)=>{
+        const n = idx+2; // 02..08
+        const li=document.createElement("li");
+        li.innerHTML=`<b>Dərs ${String(n).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+        list.appendChild(li);
+        if(item.moved){
+          const note=document.createElement("div"); note.className="warn";
+          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          list.appendChild(note);
+        }
+      });
+    }else{
+      // --- Normal rejim ---
+      // Köhnə ayın Dərs 08 (7-dən sonra 1 dərs)
+      const old8 = nextAfter(p.base, p.days, p.skip);
+      outOld.classList.remove("hide");
+      outOld.innerHTML = `<b>Köhnə ay — Dərs 08:</b> ${fmtFull(old8.date)}`
+        + (old8.moved ? `<div class="warn">Bu gün dərs olmadı: ${fmtFull(old8.movedFrom)} → növbəti uyğun günə keçirildi.</div>` : "");
+
+      // Yeni ay 01…08 (başlanğıc: köhnə ayın 08-dən SONRA)
+      const plan = buildPlan(old8.date, p.days, p.skip, 8);
+      outNew.classList.remove("hide");
+      plan.forEach((item, idx)=>{
+        const li=document.createElement("li");
+        li.innerHTML=`<b>Dərs ${String(idx+1).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+        list.appendChild(li);
+        if(item.moved){
+          const note=document.createElement("div"); note.className="warn";
+          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          list.appendChild(note);
+        }
+      });
+    }
+  }
+
+  function clearAll(){
+    ended.value=""; trialDate.value=""; day1.value=""; day2.value=""; skip.value="";
+    err.hidden=true; outOld.classList.add("hide"); outNew.classList.add("hide"); list.innerHTML=""; daysTag.textContent="";
+    setMode(false);
+  }
+
+  // Eventlər
+  go.addEventListener("click", run);
+  clearBtn.addEventListener("click", clearAll);
+  [ended, trialDate, day1, day2, skip].forEach(el=>el.addEventListener("keydown", e=>{ if(e.key==="Enter") run(); }));
+
+  // Konfor: default tarixləri bugünkü günlə doldur
+  const now=new Date();
+  const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  ended.value=today; trialDate.value=today;
+})();
+</script>
 </body>
 </html>
