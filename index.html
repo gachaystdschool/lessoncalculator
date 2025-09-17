@@ -3,57 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dərs Planı — Multi-seçimli təqvim</title>
+<title>Dərs Planı — Multi-seçim + Light/Dark</title>
 <style>
-  :root{--bg:#0b1220;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--br:#334155;--btn:#0ea5e9;--sel:#22c55e;--bad:#ef4444}
+  :root{
+    --bg:#0b1220;--card:#111827;--text:#e5e7eb;--muted:#9ca3af;--br:#334155;--btn:#0ea5e9;--sel:#22c55e
+  }
+  body.light{
+    --bg:#f8fafc;--card:#ffffff;--text:#111827;--muted:#475569;--br:#cbd5e1;--btn:#0ea5e9;--sel:#16a34a
+  }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:16px}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:16px;transition:background .3s,color .3s}
   .wrap{max-width:820px;margin:0 auto}
-  .card{background:var(--card);border:1px solid #1f2937;border-radius:16px;padding:16px}
+  .card{background:var(--card);border:1px solid var(--br);border-radius:16px;padding:16px;transition:background .3s,border-color .3s}
   h1{margin:0 0 8px;font-size:22px}
   p.lead{margin:0 0 12px;color:var(--muted)}
   label{display:block;margin:6px 0 6px;color:var(--muted);font-size:13px}
   input,select,button{
-    width:100%;padding:10px 12px;border:1px solid var(--br);border-radius:12px;background:#0b1220;color:var(--text)
+    width:100%;padding:10px 12px;border:1px solid var(--br);border-radius:12px;background:var(--bg);color:var(--text);transition:all .3s
   }
-  input:focus,select:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.25)}
+  .seg{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+  .seg button{flex:1 1 120px;padding:10px 12px;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--text);font-weight:700}
+  .seg button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
   .grid{display:flex;gap:12px;flex-wrap:wrap}
   .ctrl{flex:1 1 250px;min-width:200px}
-  .seg{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
-  .seg button{flex:1 1 120px;padding:10px 12px;border-radius:10px;border:1px solid var(--br);background:#0c1628;color:#e5e7eb;font-weight:700}
-  .seg button[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
   .btn{background:var(--btn);border-color:var(--btn);color:#fff;font-weight:700;cursor:pointer}
-  .ghost{background:transparent;border-color:var(--br)}
+  .ghost{background:transparent}
   .box{margin-top:14px;padding:12px;border:1px dashed var(--br);border-radius:12px}
-  .err{color:#f87171;margin-top:6px}
-  .warn{color:#fbbf24;margin:6px 0}
+  .err{color:#ef4444;margin-top:6px}
+  .warn{color:#f59e0b;margin:6px 0}
   .muted{color:var(--muted);font-size:12px}
+  .themeToggle{float:right;margin-bottom:12px}
 
   /* Multi-select calendar */
-  .cal{border:1px solid var(--br);border-radius:12px;overflow:hidden}
-  .calHead{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--br);background:#0c1628}
+  .cal{border:1px solid var(--br);border-radius:12px;overflow:hidden;margin-top:8px}
+  .calHead{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--br);background:var(--card)}
   .calHead h3{margin:0;font-size:16px}
   .calHead .nav{display:flex;gap:6px}
-  .calHead button{width:auto}
-  .calGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
-  .dow, .day{padding:9px 0;text-align:center;border-bottom:1px solid var(--br)}
-  .dow{font-size:12px;color:var(--muted);background:#0b1220}
+  .calGrid{display:grid;grid-template-columns:repeat(7,1fr)}
+  .dow,.day{padding:9px 0;text-align:center;border-bottom:1px solid var(--br)}
+  .dow{font-size:12px;color:var(--muted)}
   .day{cursor:pointer}
-  .day.other{color:#6b7280}
+  .day.other{color:var(--muted)}
   .day.sel{background:rgba(34,197,94,.18)}
-  .day.today{outline:2px solid #334155;outline-offset:-2px;border-radius:6px}
+  .day.today{outline:2px solid var(--btn);outline-offset:-2px;border-radius:6px}
   .badgeWrap{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--br);border-radius:999px;background:#0b1220;font-size:12px}
-  .badge b{color:#fff}
-  .x{background:transparent;border:1px solid #475569;border-radius:8px;padding:2px 6px;color:#e5e7eb;cursor:pointer}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--br);border-radius:999px;background:var(--bg);font-size:12px}
+  .badge b{color:var(--text)}
+  .x{background:transparent;border:1px solid var(--br);border-radius:8px;padding:2px 6px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>Dərs Planı (multi-seçimli təqvimlə “dərs olmadı” günləri)</h1>
-    <p class="lead">Rejim seç: <b>– Normal</b> və ya <b>+ Sınaq</b>. Həftədə 2 gün seç. “Dərs olmadı” günlərini təqvimdən **bir neçə tarix** seçərək işarələ.</p>
+    <button id="themeBtn" class="themeToggle" type="button">🌞 Light / 🌙 Dark</button>
+    <h1>Dərs Planı</h1>
+    <p class="lead">Rejim seç: <b>– Normal</b> və ya <b>+ Sınaq</b>. Həftədə 2 gün seç. “Dərs olmadı” günlərini təqvimdən <u>çox-seçimlə</u> işarələ.</p>
 
     <!-- Rejim -->
     <div class="seg" role="group" aria-label="Sınaq rejimi">
@@ -116,9 +121,7 @@
         <h3 id="calTitle">Ay, İl</h3>
         <div></div>
       </div>
-      <div class="calGrid" id="calGrid">
-        <!-- headers -->
-      </div>
+      <div class="calGrid" id="calGrid"></div>
     </div>
     <div class="badgeWrap" id="pickedWrap"></div>
 
@@ -141,14 +144,18 @@
 
 <script>
 (function(){
+  // Tema
+  const themeBtn=document.getElementById("themeBtn");
+  themeBtn.addEventListener("click",()=>document.body.classList.toggle("light"));
+
   // Ay / gün adları
   const months = ["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"];
-  const weekdays = ["B.e.","Ç.a.","Ç.","C.a.","C.","Ş.","B."]; // header üçün qısa
-  const weekdaysFull = ["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"];
+  const weekdaysShort = ["B.e.","Ç.a.","Ç.","C.a.","C.","Ş.","B."];
+  const weekdaysFull  = ["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"];
 
   // 1..7 ↔ JS getDay()
   const jsDowToNum = d => d===0 ? 7 : d;
-  const numToName = n => ["","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə","Bazar"][n];
+  const numToName  = n => ["","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə","Bazar"][n];
 
   const $ = id => document.getElementById(id);
   const modeNo=$("modeNo"), modeYes=$("modeYes"), paneNormal=$("paneNormal"), paneTrial=$("paneTrial");
@@ -159,10 +166,7 @@
   const calTitle=$("calTitle"), calGrid=$("calGrid"), pickedWrap=$("pickedWrap");
   const prevBtn=$("prev"), nextBtn=$("next"), todayBtn=$("todayBtn");
 
-  // Selected dates (YYYY-MM-DD)
-  const picked = new Set();
-
-  // Current view month
+  const picked = new Set(); // YYYY-MM-DD
   let view = (function(){ const n=new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); })();
 
   function toYMD(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
@@ -172,82 +176,62 @@
 
   function renderPickedBadges(){
     pickedWrap.innerHTML = "";
-    // Sort for pretty view
-    const arr = Array.from(picked).sort();
-    arr.forEach(s=>{
+    Array.from(picked).sort().forEach(s=>{
       const d=parseYMD(s);
       const b=document.createElement("div");
       b.className="badge";
       b.innerHTML=`<b>${s}</b> <span>${weekdaysFull[d.getDay()]}</span> <button class="x" data-x="${s}" type="button">sil</button>`;
       pickedWrap.appendChild(b);
     });
-    // bind removes
     pickedWrap.querySelectorAll("button.x").forEach(btn=>{
-      btn.addEventListener("click", (e)=>{
-        const val=e.currentTarget.getAttribute("data-x");
-        picked.delete(val);
-        renderCalendar(); renderPickedBadges();
-      });
+      btn.addEventListener("click",(e)=>{ const v=e.currentTarget.getAttribute("data-x"); picked.delete(v); renderCalendar(); renderPickedBadges(); });
     });
   }
 
   function renderCalendar(){
-    // Build headers Mon..Sun (B.e. first). We'll align grid starting Monday.
     calTitle.textContent = `${months[view.getMonth()]} ${view.getFullYear()}`;
     calGrid.innerHTML = "";
-    // Headers
-    for(let i=0;i<7;i++){
-      const h=document.createElement("div");
-      h.className="dow"; h.textContent=weekdays[i];
-      calGrid.appendChild(h);
-    }
-    // Figure start day index (Mon=1..Sun=7)
+    // headers Mon..Sun
+    for(let i=0;i<7;i++){ const h=document.createElement("div"); h.className="dow"; h.textContent=weekdaysShort[i]; calGrid.appendChild(h); }
+
     const first = new Date(view.getFullYear(), view.getMonth(), 1);
     const firstDow = jsDowToNum(first.getDay()); // 1..7
-    const leading = (firstDow + 6) % 7; // how many cells before Monday
-
-    // We will show 6 rows (42 cells) for simplicity
-    let start = addDays(first, -leading);
+    const leading = (firstDow + 6) % 7; // how many before Monday
+    const start = addDays(first, -leading);
     const todayStr = toYMD(new Date());
 
     for(let i=0;i<42;i++){
       const slot = addDays(start, i);
-      const cell = document.createElement("div");
       const ymd = toYMD(slot);
-      const inMonth = slot.getMonth() === view.getMonth();
-
+      const cell = document.createElement("div");
       cell.className = "day";
-      if(!inMonth) cell.classList.add("other");
+      if(slot.getMonth()!==view.getMonth()) cell.classList.add("other");
       if(ymd===todayStr) cell.classList.add("today");
       if(picked.has(ymd)) cell.classList.add("sel");
-
       cell.textContent = slot.getDate();
       cell.setAttribute("data-ymd", ymd);
-      cell.setAttribute("role","button");
       cell.addEventListener("click", ()=>{
         if(picked.has(ymd)) picked.delete(ymd); else picked.add(ymd);
         renderCalendar(); renderPickedBadges();
       });
-
       calGrid.appendChild(cell);
     }
   }
-
-  prevBtn.addEventListener("click", ()=>{ view = new Date(view.getFullYear(), view.getMonth()-1, 1); renderCalendar(); });
-  nextBtn.addEventListener("click", ()=>{ view = new Date(view.getFullYear(), view.getMonth()+1, 1); renderCalendar(); });
-  todayBtn.addEventListener("click", ()=>{ const n=new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); renderCalendar(); });
+  prevBtn.addEventListener("click", ()=>{ view=new Date(view.getFullYear(), view.getMonth()-1, 1); renderCalendar(); });
+  nextBtn.addEventListener("click", ()=>{ view=new Date(view.getFullYear(), view.getMonth()+1, 1); renderCalendar(); });
+  todayBtn.addEventListener("click", ()=>{ const n=new Date(); view=new Date(n.getFullYear(), n.getMonth(), 1); renderCalendar(); });
 
   // ==== MODE SWITCH ====
   function setMode(trialMode){
     modeNo.setAttribute("aria-pressed", String(!trialMode));
     modeYes.setAttribute("aria-pressed", String(trialMode));
     paneNormal.style.display = trialMode ? "none":"block";
-    paneTrial.style.display = trialMode ? "block":"none";
+    paneTrial.style.display  = trialMode ? "block":"none";
   }
   modeNo.addEventListener("click", ()=>setMode(false));
   modeYes.addEventListener("click", ()=>setMode(true));
 
-  // ==== Planner core (eyni məntiq) ====
+  // ==== Planner core ====
   function nextAfter(date, allowedDays, skipSet){
     let d = addDays(date, 1);
     while(true){
@@ -255,16 +239,15 @@
       const isSkip = skipSet.has(toYMD(d));
       if(okDay && !isSkip) return {date:d, moved:false, movedFrom:null};
       if(okDay && isSkip){
-        const from = d;
-        do { d = addDays(d,1); }
-        while( !allowedDays.includes(jsDowToNum(d.getDay())) || skipSet.has(toYMD(d)) );
+        const from=d;
+        do{ d=addDays(d,1); } while( !allowedDays.includes(jsDowToNum(d.getDay())) || skipSet.has(toYMD(d)) );
         return {date:d, moved:true, movedFrom:from};
       }
       d = addDays(d,1);
     }
   }
   function buildPlan(startExclusive, daysAllowed, skipSet, N){
-    const res=[]; let cur = startExclusive;
+    const res=[]; let cur=startExclusive;
     for(let i=1;i<=N;i++){ const step=nextAfter(cur, daysAllowed, skipSet); res.push(step); cur=step.date; }
     return res;
   }
@@ -276,7 +259,6 @@
     if(!(g1>=1&&g1<=7) || !(g2>=1&&g2<=7) || g1===g2){
       err.textContent = "Həftədə iki fərqli gün seçin (məs: 1 və 5)."; err.hidden=false; return null;
     }
-    // skip set from picked calendar
     const skipSet = new Set(Array.from(picked));
     if(trialMode){
       const t = trial.value ? parseYMD(trial.value) : null;
@@ -288,6 +270,10 @@
       return {trialMode:false, base:b, days:[g1,g2].sort((a,b)=>a-b), skip:skipSet};
     }
   }
+  function parseYMD(s){ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s); if(!m) return null; return new Date(+m[1],+m[2]-1,+m[3]); }
+  function toYMD(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
+  function addDays(d,n){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()+n); return x; }
+  function fmtFull(d){ const months=["Yanvar","Fevral","Mart","Aprel","May","İyun","İyul","Avqust","Sentyabr","Oktyabr","Noyabr","Dekabr"]; const wd=["Bazar","Bazar ertəsi","Çərşənbə axşamı","Çərşənbə","Cümə axşamı","Cümə","Şənbə"]; return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${wd[d.getDay()]}`; }
 
   function run(){
     const p = validate(); if(!p) return;
@@ -297,19 +283,19 @@
     if(p.trialMode){
       // Dərs 01 = sınaq
       outNew.hidden = false;
-      const li0 = document.createElement("li");
-      li0.innerHTML = `<b>Dərs 01:</b> Sınaq dərsi — ${fmtFull(p.trial)}`;
+      const li0=document.createElement("li");
+      li0.innerHTML=`<b>Dərs 01:</b> Sınaq dərsi — ${fmtFull(p.trial)}`;
       list.appendChild(li0);
       // 02..08
       const plan = buildPlan(p.trial, p.days, p.skip, 7);
       plan.forEach((item, idx)=>{
         const n = idx+2;
-        const li = document.createElement("li");
-        li.innerHTML = `<b>Dərs ${String(n).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+      const li=document.createElement("li");
+        li.innerHTML=`<b>Dərs ${String(n).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
         list.appendChild(li);
         if(item.moved){
           const note=document.createElement("div"); note.className="warn";
-          note.textContent = `Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
           list.appendChild(note);
         }
       });
@@ -323,12 +309,12 @@
       outNew.hidden = false;
       const plan = buildPlan(old8.date, p.days, p.skip, 8);
       plan.forEach((item, idx)=>{
-        const li = document.createElement("li");
-        li.innerHTML = `<b>Dərs ${String(idx+1).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
+        const li=document.createElement("li");
+        li.innerHTML=`<b>Dərs ${String(idx+1).padStart(2,'0')}:</b> ${fmtFull(item.date)}`;
         list.appendChild(li);
         if(item.moved){
           const note=document.createElement("div"); note.className="warn";
-          note.textContent = `Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
+          note.textContent=`Bu gün dərs olmadı: ${fmtFull(item.movedFrom)} → növbəti dərs gününə keçirildi.`;
           list.appendChild(note);
         }
       });
@@ -336,13 +322,11 @@
   }
 
   function clearAll(){
-    ended.value = ""; trial.value = ""; day1.value = ""; day2.value = "";
+    ended.value=""; trial.value=""; day1.value=""; day2.value="";
     picked.clear(); renderCalendar(); renderPickedBadges();
-    err.hidden = true; outOld.hidden = true; outNew.hidden = true; list.innerHTML = ""; daysTag.textContent = "";
+    err.hidden=true; outOld.hidden=true; outNew.hidden=true; list.innerHTML=""; daysTag.textContent="";
     setMode(false);
   }
-
-  function setMode(trialMode){ modeNo.click(); if(trialMode) modeYes.click(); }
 
   // Events
   go.addEventListener("click", run);
